@@ -17,6 +17,7 @@ public class Spawner : MonoBehaviour
     {
         Vector3 pos = transform.position;
         Vector3 tankPos = GameManager.Instance.tankPosition.position;
+
         for (int i = 0; i < enemies; i++)
         {
             pos.x = Random.Range(-4.0f, 4.0f);
@@ -25,14 +26,15 @@ public class Spawner : MonoBehaviour
 
             Instantiate(enemyPrefab, pos, Quaternion.Euler(new Vector3(0, 0, angle + 90)));
         }
-        if ( enemies >= 6) 
+        if (enemies >= 6)
         {
             if (GameManager.Instance.multiplier >= 10) { return; }
             GameManager.Instance.multiplier++;
-            return; 
+            return;
         }
-        
+
         enemies += GameManager.Instance.initialEnemies;
+
     }
 
 }

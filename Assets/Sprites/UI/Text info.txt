@@ -1,0 +1,21 @@
+Gameplay
+Font Type : Source Serif
+
+Score point :
+	Size	: 19,38pt
+	Color	: #383838
+	Type	: Light
+
+_____________________
+Menu Game Over
+Font Type : Source Serif
+
+Score  :
+	Size	: 19,38pt
+	Color	: #e9e9e9
+	Type	: Light	
+
+Hi-Score :
+	Size	: 12,59pt
+	Color	: #171717
+	Type	: Black

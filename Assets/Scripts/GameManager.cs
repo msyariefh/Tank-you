@@ -37,6 +37,9 @@ public class GameManager : MonoBehaviour
     // Enemy Stats
     public float enemySpd = .05f; // Enemy speed [scaled once more in instantiate]
     public float spawnerCD = 2.0f; // Cooldown for enemy spawner
+
+
+    public MenuManager menu;
     
     /**
      * ================
