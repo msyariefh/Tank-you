@@ -65,14 +65,4 @@ public class Tank : MonoBehaviour
     }
 
 
-    // When get hit
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            // Game Over
-            GameManager.Instance.GameOver();
-        }
-    }
-
 }

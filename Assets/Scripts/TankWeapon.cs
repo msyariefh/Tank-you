@@ -7,8 +7,8 @@ public class TankWeapon : MonoBehaviour
     private void Update()
     {
         // Move towards Y axis
-        transform.Translate(0, GameManager.Instance.shootVelocity + 
-            (GameManager.Instance.multiplier * 0.01f), 0);
+        transform.Translate(0, (GameManager.Instance.shootVelocity + 
+            (GameManager.Instance.multiplier * 0.01f)) * Time.timeScale, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D trigger)

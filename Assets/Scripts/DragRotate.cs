@@ -17,6 +17,7 @@ public class DragRotate : MonoBehaviour
     private float angleOff; // Difference between 2 angle
 
     private float maxAngle;
+    private bool isTouching = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,12 +41,16 @@ public class DragRotate : MonoBehaviour
             if ( touch.phase == TouchPhase.Began)
             {
                 if (!(col == Physics2D.OverlapPoint(touchPos))) { return; }
+                isTouching = true;
                 touch0Pos = touchPos;
             }
 
             // If user move the touch
             if (touch.phase == TouchPhase.Moved)
             {
+                if (!isTouching) { return; }
+                if ( touchPos.y < toRotateOriPos.y + .5f) { return; }
+
                 Vector3 deltaTouch0 = touch0Pos - toRotateOriPos; // Last touch pos from rotating obj
                 Vector3 deltaToucht = touchPos - toRotateOriPos; // current touch pos from rotating obj
 
@@ -75,6 +80,10 @@ public class DragRotate : MonoBehaviour
 
                 }
 
+            }
+            if (touch.phase == TouchPhase.Ended)
+            {
+                isTouching = false;
             }
 
         }

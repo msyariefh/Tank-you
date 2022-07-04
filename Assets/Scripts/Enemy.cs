@@ -30,9 +30,7 @@ public class Enemy : MonoBehaviour
         if (trigger.gameObject.CompareTag("Player"))
         {
             Debug.Log("Game Over");
-            MenuManager.Instance.gameOverPanel.SetActive(true);
-            Time.timeScale = 0;
-            MenuManager.Instance.state = MenuManager.State.Menu;
+            MenuManager.Instance.GameOver();
         }
 
     }

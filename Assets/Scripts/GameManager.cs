@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null) { Instance = this; }
         else if (Instance == this) { Destroy(this); }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     /** 
@@ -65,12 +65,16 @@ public class GameManager : MonoBehaviour
 
         return "0000";
     }
-
-    public void GameOver()
+    public string AddZeros(int score)
     {
-        // Game over
-        Debug.Log("GAME OVER");
-        Application.Quit();
+        // pattern 0000
+        if (score < 10) { return "000" + score; }
+        if (score < 100) { return "00" + score; }
+        if (score < 1000) { return "0" + score; }
+        if (score < 10000) { return score.ToString(); }
+
+        return "0000";
     }
 
+    
 }
