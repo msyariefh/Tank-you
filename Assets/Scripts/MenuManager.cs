@@ -80,7 +80,7 @@ public class MenuManager : MonoBehaviour
     {
         
         int currentScore = GameManager.Instance.score;
-        if (PlayerPrefs.HasKey("HighScore")) 
+        if (!PlayerPrefs.HasKey("HighScore")) 
         { 
             PlayerPrefs.SetInt("HighScore", currentScore);
             if (currentScore > 0) { newBadge.SetActive(true); }
@@ -94,6 +94,7 @@ public class MenuManager : MonoBehaviour
         {
             newBadge.SetActive(false);
         }
+        PlayerPrefs.Save();
         int highScore = PlayerPrefs.GetInt("HighScore");
         score.text = GameManager.Instance.AddZeros(currentScore);
         HScore.text = GameManager.Instance.AddZeros(highScore);
