@@ -63,7 +63,7 @@ public class MenuManager : MonoBehaviour
     }
     public void StartGame()
     {
-        StartCoroutine(PlayMenuAnimation());
+        StartCoroutine(StartMenuAnimation());
         Debug.Log("Start");
         //SceneManager.LoadScene(1);
         //Time.timeScale = 1f;
@@ -71,8 +71,9 @@ public class MenuManager : MonoBehaviour
     }
     public void MenuGame()
     {
-        SceneManager.LoadScene(0);
-        state = State.Menu;
+        StartCoroutine(MainMenuAnimation());
+        //SceneManager.LoadScene(0);
+        //state = State.Menu;
     }
     public void RetryGame()
     {
@@ -108,23 +109,22 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    IEnumerator PlayMenuAnimation()
+    IEnumerator StartMenuAnimation()
     {
-        Debug.Log("Masuk PlayMenu");
-        if (backgroundAnimation.enabled == false || skullsAnimation.enabled == false)
-        {
-            backgroundAnimation.enabled = true;
-            skullsAnimation.enabled = true;
-        }
         skullsAnimation.SetBool("isStarting", true);
         backgroundAnimation.SetBool("isStarting", true);
-        //SceneManager.LoadSceneAsync(1);
         yield return new WaitForSeconds(1f);
-        backgroundAnimation.SetBool("isStarting", false);
-        skullsAnimation.SetBool("isStarting", false);
         SceneManager.LoadScene(1);
         Time.timeScale = 1f;
         state = State.Gameplay;
+    }
+    IEnumerator MainMenuAnimation()
+    {
+        SceneManager.LoadScene(0);
+        state = State.Menu;
+        skullsAnimation.SetBool("isStarting", false);
+        backgroundAnimation.SetBool("isStarting", false);
+        yield return new WaitForSeconds(1f);
     }
 }
 
