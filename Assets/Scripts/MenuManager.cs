@@ -14,6 +14,9 @@ public class MenuManager : MonoBehaviour
     public TMP_Text score;
     public TMP_Text HScore;
     public GameObject newBadge;
+    public Animator backgroundAnimation;
+    public Animator skullsAnimation;
+    
     public enum State
     {
         Menu,
