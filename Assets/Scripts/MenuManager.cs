@@ -63,9 +63,11 @@ public class MenuManager : MonoBehaviour
     }
     public void StartGame()
     {
-        SceneManager.LoadScene(1);
-        Time.timeScale = 1f;
-        state = State.Gameplay;
+        StartCoroutine(PlayMenuAnimation());
+        Debug.Log("Start");
+        //SceneManager.LoadScene(1);
+        //Time.timeScale = 1f;
+        //state = State.Gameplay;
     }
     public void MenuGame()
     {
@@ -104,6 +106,25 @@ public class MenuManager : MonoBehaviour
         gameOverPanel.SetActive(true);
         state = State.Menu;
         Time.timeScale = 0f;
+    }
+
+    IEnumerator PlayMenuAnimation()
+    {
+        Debug.Log("Masuk PlayMenu");
+        if (backgroundAnimation.enabled == false || skullsAnimation.enabled == false)
+        {
+            backgroundAnimation.enabled = true;
+            skullsAnimation.enabled = true;
+        }
+        skullsAnimation.SetBool("isStarting", true);
+        backgroundAnimation.SetBool("isStarting", true);
+        //SceneManager.LoadSceneAsync(1);
+        yield return new WaitForSeconds(1f);
+        backgroundAnimation.SetBool("isStarting", false);
+        skullsAnimation.SetBool("isStarting", false);
+        SceneManager.LoadScene(1);
+        Time.timeScale = 1f;
+        state = State.Gameplay;
     }
 }
 

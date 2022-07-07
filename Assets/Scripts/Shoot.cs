@@ -7,6 +7,7 @@ public class Shoot : MonoBehaviour
     private float shootSpeed;
     private float multiplier;
     private bool isAttacking = false;
+    private bool isInWait = true;
 
     [SerializeField] private GameObject bulletPrefab;
     private AudioSource sfx;
@@ -23,6 +24,12 @@ public class Shoot : MonoBehaviour
     private void Update()
     {
         //StartCoroutine(Duar());
+        if (isInWait == true)
+        {
+            isInWait = false;
+            Invoke("Wait", 1f);
+            return;
+        }
         if (isAttacking == false)
         {
             StartCoroutine(Duar());
@@ -45,5 +52,9 @@ public class Shoot : MonoBehaviour
         bodyAnimation.SetBool("isShoot", false);
         riffleAnimation.SetBool("isShoot", false);
         isAttacking = false;
+    }
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(2f);
     }
 }

@@ -5,18 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    public Animator Skulltransition;
-    public Animator MetalBGtransition;
+    public Animator SkullTransition;
+    public Animator MetalBGTransition;
 
     public float transitionTime = 1f;
     // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetMouseButton(0))
-        {
-            LoadNextLevel();
-        }
-    }
+    //void Update()
+    //{
+    //    if(Input.GetMouseButton(0))
+    //    {
+    //        LoadNextLevel();
+    //    }
+    //}
 
     public void LoadNextLevel()
     {
@@ -26,8 +26,8 @@ public class LevelLoader : MonoBehaviour
     IEnumerator LoadLevel(int levelIndex)
     {
         //Play Animation
-        Skulltransition.SetTrigger("Disappear");
-        MetalBGtransition.SetTrigger("Scroll");
+        SkullTransition.SetTrigger("Disappear");
+        MetalBGTransition.SetTrigger("Scroll");
         //Wait
         yield return new WaitForSeconds(transitionTime);
         //Load Scene
