@@ -16,7 +16,7 @@ public class MenuManager : MonoBehaviour
     public GameObject newBadge;
     public Animator backgroundAnimation;
     public Animator skullsAnimation;
-    
+
     public enum State
     {
         Menu,
@@ -71,6 +71,7 @@ public class MenuManager : MonoBehaviour
     {
         SceneManager.LoadScene(0);
         state = State.Menu;
+        Time.timeScale = 1f;
     }
     public void RetryGame()
     {
@@ -81,15 +82,15 @@ public class MenuManager : MonoBehaviour
     }
     public void GameOver()
     {
-        
+
         int currentScore = GameManager.Instance.score;
-        if (!PlayerPrefs.HasKey("HighScore")) 
-        { 
+        if (!PlayerPrefs.HasKey("HighScore"))
+        {
             PlayerPrefs.SetInt("HighScore", currentScore);
             if (currentScore > 0) { newBadge.SetActive(true); }
         }
-        else if (PlayerPrefs.GetInt("HighScore") < currentScore) 
-        { 
+        else if (PlayerPrefs.GetInt("HighScore") < currentScore)
+        {
             PlayerPrefs.SetInt("HighScore", currentScore);
             newBadge.SetActive(true);
         }
@@ -105,5 +106,6 @@ public class MenuManager : MonoBehaviour
         state = State.Menu;
         Time.timeScale = 0f;
     }
+
 }
 
