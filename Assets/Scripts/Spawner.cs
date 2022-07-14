@@ -26,9 +26,9 @@ public class Spawner : MonoBehaviour
 
             Instantiate(enemyPrefab, pos, Quaternion.Euler(new Vector3(0, 0, angle + 90)));
         }
-        if (enemies >= 6)
+        if (enemies >= 4)
         {
-            if (GameManager.Instance.multiplier >= 10) { return; }
+            if (GameManager.Instance.multiplier >= 20) { return; }
             GameManager.Instance.multiplier++;
             return;
         }

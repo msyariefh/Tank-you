@@ -31,10 +31,10 @@ public class Shoot : MonoBehaviour
     {
         isAttacking = true;
         riffleAnimation.SetBool("isShoot", true);
-        riffleAnimation.speed = (shootSpeed + multiplier * 0.01f) + GameManager.Instance.multiplier * 0.025f;
+        riffleAnimation.speed = shootSpeed + GameManager.Instance.multiplier * 0.05f;
         //bodyAnimation.SetBool("isShoot", true);
 
-        yield return new WaitForSeconds(1 / (shootSpeed + multiplier * 0.05f));
+        yield return new WaitForSeconds(1 / (shootSpeed + GameManager.Instance.multiplier * 0.05f));
         Quaternion parentRot = gameObject.transform.parent.transform.rotation;
 
         // Instantiate bullet on the top of the launcher

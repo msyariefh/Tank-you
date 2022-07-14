@@ -8,7 +8,7 @@ public class TankWeapon : MonoBehaviour
     {
         // Move towards Y axis
         transform.Translate(0, (GameManager.Instance.shootVelocity + 
-            (GameManager.Instance.multiplier * 0.01f)) * Time.timeScale, 0);
+            (GameManager.Instance.multiplier * 0.01f)) * Time.deltaTime, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D trigger)
@@ -30,6 +30,7 @@ public class TankWeapon : MonoBehaviour
         {
             GameManager.Instance.AddScores(1);
             Instantiate(boom, transform.position, Quaternion.identity);
+            FindObjectOfType<AudioManager>().PlaySound("AlienExplode");
             Destroy(trigger.gameObject);
             Destroy(this.gameObject);
             return;

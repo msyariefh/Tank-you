@@ -71,6 +71,7 @@ public class MenuManager : MonoBehaviour
     }
     public void MenuGame()
     {
+        FindObjectOfType<InterstitialAds>().LoadAd();
         FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(0);
         state = State.Menu;
@@ -79,6 +80,7 @@ public class MenuManager : MonoBehaviour
     }
     public void RetryGame()
     {
+        FindObjectOfType<InterstitialAds>().LoadAd();
         FindObjectOfType<AudioManager>().PlaySound("Arena", "Arena");
         FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(1);
@@ -110,6 +112,7 @@ public class MenuManager : MonoBehaviour
         HScore.text = GameManager.Instance.AddZeros(highScore);
         gameOverPanel.SetActive(true);
         state = State.Menu;
+        
         Time.timeScale = 0f;
     }
 
