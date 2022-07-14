@@ -14,8 +14,6 @@ public class MenuManager : MonoBehaviour
     public TMP_Text score;
     public TMP_Text HScore;
     public GameObject newBadge;
-    public Animator backgroundAnimation;
-    public Animator skullsAnimation;
 
     public enum State
     {
@@ -49,10 +47,12 @@ public class MenuManager : MonoBehaviour
     }
     public void ResumeGame()
     {
+        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
         isPause = false;
         state = State.Gameplay;
+        
     }
     public void PauseGame()
     {
@@ -60,21 +60,27 @@ public class MenuManager : MonoBehaviour
         pausePanel.SetActive(true);
         isPause = true;
         state = State.Menu;
+        FindObjectOfType<AudioManager>().AddEffectOnSound("Arena");
     }
     public void StartGame()
     {
+        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(1);
         Time.timeScale = 1f;
         state = State.Gameplay;
     }
     public void MenuGame()
     {
+        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(0);
         state = State.Menu;
         Time.timeScale = 1f;
+        FindObjectOfType<AudioManager>().PlaySound("Arena", "MainMenu");
     }
     public void RetryGame()
     {
+        FindObjectOfType<AudioManager>().PlaySound("Arena", "Arena");
+        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(1);
         Time.timeScale = 1f;
         state = State.Gameplay;
@@ -82,7 +88,7 @@ public class MenuManager : MonoBehaviour
     }
     public void GameOver()
     {
-
+        FindObjectOfType<AudioManager>().AddEffectOnSound("Arena");
         int currentScore = GameManager.Instance.score;
         if (!PlayerPrefs.HasKey("HighScore"))
         {

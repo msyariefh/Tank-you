@@ -9,7 +9,6 @@ public class Shoot : MonoBehaviour
     private bool isAttacking = false;
 
     [SerializeField] private GameObject bulletPrefab;
-    private AudioSource sfx;
     public Animator riffleAnimation;
     public Animator bodyAnimation;
 
@@ -17,7 +16,6 @@ public class Shoot : MonoBehaviour
     {
         shootSpeed = GameManager.Instance.shootSpeed;
         multiplier = GameManager.Instance.multiplier;
-        sfx = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -41,7 +39,7 @@ public class Shoot : MonoBehaviour
 
         // Instantiate bullet on the top of the launcher
         Instantiate(bulletPrefab, gameObject.transform.position, parentRot);
-        sfx.Play();
+        FindObjectOfType<AudioManager>().PlaySound("TankFire");
         bodyAnimation.SetBool("isShoot", false);
         riffleAnimation.SetBool("isShoot", false);
         isAttacking = false;
