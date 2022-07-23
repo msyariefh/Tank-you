@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     public float shootSpeed = .8f; // Shoots per second
     public float shootVelocity = .1f; // Speeds of a shoot
     public float sensitivity = 1.0f; // Move sensitivity
-    public float maximumShootAngle = 0.35f; // Rotation limitation (in z rotation)
+    [Range(0f, 1f)] public float maximumShootAngle = 0.35f; // Rotation limitation (in z rotation)
     public Transform tankPosition;
     public bool activateHelper = false;
 

@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        selfGacha = Random.Range(.3f, .5f) + (GameManager.Instance.multiplier * 0.0005f);
+        selfGacha = Random.Range(.3f, .5f) + (GameManager.Instance.multiplier * 0.005f);
 
     }
     // Enemy movement

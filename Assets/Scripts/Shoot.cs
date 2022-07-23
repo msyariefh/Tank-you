@@ -33,6 +33,7 @@ public class Shoot : MonoBehaviour
         riffleAnimation.SetBool("isShoot", true);
         riffleAnimation.speed = shootSpeed + GameManager.Instance.multiplier * 0.05f;
         //bodyAnimation.SetBool("isShoot", true);
+        print(1 / (shootSpeed + GameManager.Instance.multiplier * 0.05f));
 
         yield return new WaitForSeconds(1 / (shootSpeed + GameManager.Instance.multiplier * 0.05f));
         Quaternion parentRot = gameObject.transform.parent.transform.rotation;
