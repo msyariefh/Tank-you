@@ -18,4 +18,4 @@ Game Development:
 - [x] Prototype 
 - [x] Assets
 - [x] Post-Production
-- [ ] Build
+- [x] Build
