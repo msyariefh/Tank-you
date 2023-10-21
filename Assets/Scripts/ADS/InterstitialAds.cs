@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
 
@@ -28,6 +29,7 @@ public class InterstitialAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
     public void ShowAd()
     {
         // Note that if the ad content wasn't previously loaded, this method will fail
+        adShowing = true;
         Debug.Log("Showing Ad: " + _adUnitId);
         Advertisement.Show(_adUnitId, this);
     }
@@ -49,11 +51,20 @@ public class InterstitialAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
         Debug.Log($"Error showing Ad Unit {adUnitId}: {error.ToString()} - {message}");
         // Optionally execute code if the Ad Unit fails to show, such as loading another ad.
     }
-
+    public IEnumerable WaitingForAds()
+    {
+        yield return new WaitUntil(() => adShowing == false);
+    }
+    private void Update()
+    {
+        print($"Showing Ads: {adShowing}");
+    }
+    private bool adShowing = false;
     public void OnUnityAdsShowStart(string adUnitId) 
     {
-        Time.timeScale = 0;
+        adShowing = true;
+        //Time.timeScale = 0;
     }
-    public void OnUnityAdsShowClick(string adUnitId) { Time.timeScale = 1; }
-    public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState) { Time.timeScale = 1; }
+    public void OnUnityAdsShowClick(string adUnitId) { Time.timeScale = 1; adShowing = false; }
+    public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState) { Time.timeScale = 1; adShowing = false; }
 }

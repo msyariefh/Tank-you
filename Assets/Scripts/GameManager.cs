@@ -23,19 +23,19 @@ public class GameManager : MonoBehaviour
     // Game Stats
     public int initialEnemies = 2;  // Enemies per one spawn
     public GameObject scoreboard; // Scoreboard
-    public int multiplier = 0;
+    public int Multiplier = 0;
 
     // Player (Tank) Stats
     public int score = 0; // Increase when player destroy enemy
     public float shootSpeed = .8f; // Shoots per second
-    public float shootVelocity = .1f; // Speeds of a shoot
+    public float ShootVelocity = .1f; // Speeds of a shoot
     public float sensitivity = 1.0f; // Move sensitivity
     [Range(0f, 1f)] public float maximumShootAngle = 0.35f; // Rotation limitation (in z rotation)
-    public Transform tankPosition;
+    public Transform Tank;
     public bool activateHelper = false;
 
     // Enemy Stats
-    public float enemySpd = .05f; // Enemy speed [scaled once more in instantiate]
+    public float EnemySpeed = .05f; // Enemy speed [scaled once more in instantiate]
     public float spawnerCD = 2.0f; // Cooldown for enemy spawner
 
 
@@ -75,6 +75,11 @@ public class GameManager : MonoBehaviour
 
         return "0000";
     }
-
+    AudioManager ManagerAudio;
+    public void PlaySoundFX(string name)
+    {
+        ManagerAudio ??= FindFirstObjectByType<AudioManager>();
+        ManagerAudio.PlaySound(name);
+    }
     
 }

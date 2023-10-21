@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Shoot : MonoBehaviour
 {
@@ -8,14 +9,59 @@ public class Shoot : MonoBehaviour
     private float multiplier;
     private bool isAttacking = false;
 
-    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject m_BulletPrefab;
     public Animator riffleAnimation;
     public Animator bodyAnimation;
+    private IObjectPool<GameObject> m_BulletPool;
+    public IObjectPool<GameObject> BulletPool
+    {
+        get
+        {
+            m_BulletPool ??= new ObjectPool<GameObject>(
+                    // On Create Pool
+                    () =>
+                    {
+                        var go = Instantiate(m_BulletPrefab);
+
+                        // pool
+                        var itemPool = go.GetComponent<IPoolableItem>();
+                        itemPool.Pool = BulletPool;
+                        return go;
+
+                    },
+                    // On Get Pool
+                    (GameObject go) =>
+                    {
+                        Quaternion parentRot = gameObject.transform.parent.transform.rotation;
+                        go.transform.position = transform.position;
+                        go.transform.rotation = parentRot;
+                        go.SetActive(true);
+                    },
+                    // On Return Pool
+                    (GameObject go) =>
+                    {
+                        go.SetActive(false);
+                    },
+                    // On Pool Destroy
+                    (GameObject go) =>
+                    {
+                        Destroy(go);
+                    },
+                    // Default Capacity
+                    defaultCapacity: 20
+                    );
+            return m_BulletPool;
+        }
+    }
+    private void OnDestroy()
+    {
+        BulletPool.Clear();
+    }
 
     private void Start()
     {
         shootSpeed = GameManager.Instance.shootSpeed;
-        multiplier = GameManager.Instance.multiplier;
+        multiplier = GameManager.Instance.Multiplier;
     }
 
     private void Update()
@@ -23,24 +69,24 @@ public class Shoot : MonoBehaviour
         //StartCoroutine(Duar());
         if (isAttacking == false)
         {
-            StartCoroutine(Duar());
+            StartCoroutine(ShootBullet());
         }
     }
     
-    IEnumerator Duar()
+    IEnumerator ShootBullet()
     {
+        var newSpd = shootSpeed + GameManager.Instance.Multiplier * 0.2f;
         isAttacking = true;
         riffleAnimation.SetBool("isShoot", true);
-        riffleAnimation.speed = shootSpeed + GameManager.Instance.multiplier * 0.05f;
+        riffleAnimation.speed = newSpd;
         //bodyAnimation.SetBool("isShoot", true);
-        print(1 / (shootSpeed + GameManager.Instance.multiplier * 0.05f));
 
-        yield return new WaitForSeconds(1 / (shootSpeed + GameManager.Instance.multiplier * 0.05f));
-        Quaternion parentRot = gameObject.transform.parent.transform.rotation;
-
-        // Instantiate bullet on the top of the launcher
-        Instantiate(bulletPrefab, gameObject.transform.position, parentRot);
-        FindObjectOfType<AudioManager>().PlaySound("TankFire");
+        yield return new WaitForSeconds(1 / newSpd);
+        BulletPool.Get();
+        //// Instantiate bullet on the top of the launcher
+        //Instantiate(m_BulletPrefab, gameObject.transform.position, parentRot);
+        GameManager.Instance.PlaySoundFX("TankFire");
+        //FindObjectOfType<AudioManager>().PlaySound("TankFire");
         bodyAnimation.SetBool("isShoot", false);
         riffleAnimation.SetBool("isShoot", false);
         isAttacking = false;

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System;
+using Random = UnityEngine.Random;
 
 public class MenuManager : MonoBehaviour
 {
@@ -14,6 +16,11 @@ public class MenuManager : MonoBehaviour
     public TMP_Text score;
     public TMP_Text HScore;
     public GameObject newBadge;
+    private InterstitialAds interstitialAds;
+    private AudioManager audioManager;
+
+    private InterstitialAds AdsManager => interstitialAds ??= FindFirstObjectByType<InterstitialAds>();
+    private AudioManager Audio=> audioManager ??= FindFirstObjectByType<AudioManager>();
 
     public enum State
     {
@@ -47,7 +54,7 @@ public class MenuManager : MonoBehaviour
     }
     public void ResumeGame()
     {
-        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
+        Audio.RemoveEffectOnSound("Arena");
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
         isPause = false;
@@ -60,29 +67,38 @@ public class MenuManager : MonoBehaviour
         pausePanel.SetActive(true);
         isPause = true;
         state = State.Menu;
-        FindObjectOfType<AudioManager>().AddEffectOnSound("Arena");
+        Audio.AddEffectOnSound("Arena");
     }
     public void StartGame()
     {
-        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
+        Audio.RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(1);
         Time.timeScale = 1f;
         state = State.Gameplay;
     }
     public void MenuGame()
     {
-        FindObjectOfType<InterstitialAds>().LoadAd();
-        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
-        SceneManager.LoadScene(0);
-        state = State.Menu;
-        Time.timeScale = 1f;
-        FindObjectOfType<AudioManager>().PlaySound("Arena", "MainMenu");
+        //FindObjectOfType<InterstitialAds>().LoadAd();
+        if (IsTimeToLoadAds()) AdsManager.LoadAd();
+        Audio.RemoveEffectOnSound("Arena");
+        StartCoroutine(ExecuteAdsThenMenu(() =>
+        {
+            SceneManager.LoadScene(0);
+            state = State.Menu;
+            Time.timeScale = 1f;
+            Audio.PlaySound("Arena", "MainMenu");
+        }));
+        //FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
+        //SceneManager.LoadScene(0);
+        //state = State.Menu;
+        //Time.timeScale = 1f;
+        //FindObjectOfType<AudioManager>().PlaySound("Arena", "MainMenu");
     }
     public void RetryGame()
     {
-        FindObjectOfType<InterstitialAds>().LoadAd();
-        FindObjectOfType<AudioManager>().PlaySound("Arena", "Arena");
-        FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
+        if (IsTimeToLoadAds()) AdsManager.LoadAd();
+        Audio.PlaySound("Arena", "Arena");
+        Audio.RemoveEffectOnSound("Arena");
         SceneManager.LoadScene(1);
         Time.timeScale = 1f;
         state = State.Gameplay;
@@ -90,7 +106,8 @@ public class MenuManager : MonoBehaviour
     }
     public void GameOver()
     {
-        FindObjectOfType<AudioManager>().AddEffectOnSound("Arena");
+        if (IsTimeToLoadAds()) AdsManager.LoadAd();
+        Audio.AddEffectOnSound("Arena");
         int currentScore = GameManager.Instance.score;
         if (!PlayerPrefs.HasKey("HighScore"))
         {
@@ -116,5 +133,25 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    IEnumerator ExecuteAdsThenMenu(Action afterAds)
+    {
+        yield return AdsManager.WaitingForAds();
+        afterAds?.Invoke();
+    }
+    
+    float lastTimeLoadAds = 0f;
+    private bool IsTimeToLoadAds()
+    {
+        var currentTime = Time.time;
+        if (lastTimeLoadAds == 0) lastTimeLoadAds = currentTime;
+        if (currentTime - lastTimeLoadAds > 30)
+        {
+            lastTimeLoadAds = currentTime;
+            var ran = Random.Range(1, 100);
+            if (ran % 3 == 0) return true;
+            return false;
+        }
+        return false;
+    }
 }
 

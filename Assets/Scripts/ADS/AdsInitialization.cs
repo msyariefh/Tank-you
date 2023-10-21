@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
 
@@ -20,7 +21,7 @@ public class AdsInitialization : MonoBehaviour, IUnityAdsInitializationListener
             : _androidGameId;
         Advertisement.Initialize(_gameId, _testMode, this);
     }
-
+    
     public void OnInitializationComplete()
     {
         Debug.Log("Unity Ads initialization complete.");
