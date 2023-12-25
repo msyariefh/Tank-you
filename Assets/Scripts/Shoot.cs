@@ -60,7 +60,7 @@ public class Shoot : MonoBehaviour
 
     private void Start()
     {
-        shootSpeed = GameManager.Instance.shootSpeed;
+        shootSpeed = GameManager.Instance.TankShootPerSecond;
         multiplier = GameManager.Instance.Multiplier;
     }
 

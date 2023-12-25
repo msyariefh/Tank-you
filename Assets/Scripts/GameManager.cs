@@ -21,24 +21,36 @@ public class GameManager : MonoBehaviour
      */
 
     // Game Stats
-    public int initialEnemies = 2;  // Enemies per one spawn
-    public GameObject scoreboard; // Scoreboard
-    public int Multiplier = 0;
-
-    // Player (Tank) Stats
-    public int score = 0; // Increase when player destroy enemy
-    public float shootSpeed = .8f; // Shoots per second
-    public float ShootVelocity = .1f; // Speeds of a shoot
-    public float sensitivity = 1.0f; // Move sensitivity
-    [Range(0f, 1f)] public float maximumShootAngle = 0.35f; // Rotation limitation (in z rotation)
-    public Transform Tank;
-    public bool activateHelper = false;
+    
+    [Header("TANK STATS")]
+    [Tooltip("Tank's shoots per second")]
+    public float TankShootPerSecond = .8f; // Shoots per second
+    [Tooltip("Tank's weapon velocity when shot")]
+    public float TankWeaponSpeed = .1f; // Speeds of a shoot
+    
+    [HideInInspector]public float sensitivity = 1.0f; // Move sensitivity
+    [HideInInspector][Range(0f, 1f)] public float maximumShootAngle = 0.35f; // Rotation limitation (in z rotation)
 
     // Enemy Stats
+    [Header("ENEMY STATS")]
+    [Tooltip("Initial Enemy(es) number per spawn")]
+    public int InitialSpawnNumber = 2;  // Enemies per one spawn
+    [Tooltip("Enemy speed when attacking")]
     public float EnemySpeed = .05f; // Enemy speed [scaled once more in instantiate]
+    [Tooltip("Time before next enemy bulk spawn")]
     public float spawnerCD = 2.0f; // Cooldown for enemy spawner
+    [Tooltip("Time growth after some spawns")]
+    public float SpawnerTimeGrowth = 0f;
 
+    [Header("MISC")]
 
+    public GameObject scoreboard; // Scoreboard
+    [HideInInspector] public int Multiplier = 0;
+
+    // Player (Tank) Stats
+    [HideInInspector]public int score = 0; // Increase when player destroy enemy
+    public Transform Tank;
+    public bool activateHelper = false;
     public MenuManager menu;
     
     /**

@@ -6,6 +6,7 @@ public class Spawner : MonoBehaviour
 {
     private int enemies;
     private float cooldown;
+    private int waveNum = 0;
 
     [SerializeField]
     private GameObject m_EnemyPrefab;
@@ -70,7 +71,7 @@ public class Spawner : MonoBehaviour
     private void Start()
     {
         //InvokeRepeating(string(SpawnEnemies), 1, GameManager.Instance.spawnerCD); 
-        enemies = GameManager.Instance.initialEnemies;
+        enemies = GameManager.Instance.InitialSpawnNumber;
         cooldown = GameManager.Instance.spawnerCD;
     }
     private void Update()
@@ -79,6 +80,7 @@ public class Spawner : MonoBehaviour
         {
             var newCD = cooldown + (.2f * (enemies / 5));
             StartCoroutine(SpawnEnemiesAfter(enemies, newCD));
+            cooldown += GameManager.Instance.SpawnerTimeGrowth * waveNum;
         }
     }
 
@@ -86,6 +88,7 @@ public class Spawner : MonoBehaviour
     IEnumerator SpawnEnemiesAfter(int num, float time)
     {
         m_stillSpawning = true;
+        waveNum++;
         var newTime = time / enemies;
         for (int i = num; i >0; i--)
         {
@@ -117,7 +120,7 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        enemies += GameManager.Instance.initialEnemies;
+        enemies += GameManager.Instance.InitialSpawnNumber;
 
     }
 

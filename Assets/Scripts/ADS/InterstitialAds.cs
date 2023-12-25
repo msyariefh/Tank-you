@@ -55,10 +55,7 @@ public class InterstitialAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
     {
         yield return new WaitUntil(() => adShowing == false);
     }
-    private void Update()
-    {
-        print($"Showing Ads: {adShowing}");
-    }
+
     private bool adShowing = false;
     public void OnUnityAdsShowStart(string adUnitId) 
     {

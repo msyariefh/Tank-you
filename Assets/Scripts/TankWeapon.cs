@@ -20,7 +20,7 @@ public class TankWeapon : MonoBehaviour, IPoolableItem
     private void Update()
     {
         transform.Translate(0, (1f + additionalSpeed) *
-           GameManager.Instance.ShootVelocity *
+           GameManager.Instance.TankWeaponSpeed *
            Time.deltaTime * 30f, 0);
         // Move towards Y axis
         //transform.Translate(0, (GameManager.Instance.ShootVelocity + 
