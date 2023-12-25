@@ -10,14 +10,16 @@ public class DragRotate : MonoBehaviour
 
     // Position
     // All positions should be in world points not screen
-    private Vector3 toRotateOriPos; // Original Position object want to rotate
-    private Vector3 touch0Pos; // Touch position as comparison to others (0)
+    private Vector2 toRotateOriPos; // Original Position object want to rotate
+    private Vector2 touch0Pos; // Touch position as comparison to others (0)
 
     // Angle
     private float angleOff; // Difference between 2 angle
 
     private float maxAngle;
     private bool isTouching = false;
+    private Vector2 _mouseRef = Vector2.zero;
+    private Vector3 _rotation = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -28,9 +30,45 @@ public class DragRotate : MonoBehaviour
         maxAngle = GameManager.Instance.maximumShootAngle;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void OnMouseDown()
     {
+#if UNITY_EDITOR
+        _mouseRef = (Vector2)cam.ScreenToWorldPoint(Input.mousePosition);
+#endif
+    }
+    private void OnMouseDrag()
+    {
+#if UNITY_EDITOR
+        if (MenuManager.Instance.state != MenuManager.State.Gameplay) return;
+        var curr = (Vector2)cam.ScreenToWorldPoint(Input.mousePosition);
+        if (curr == _mouseRef) return;
+        if (curr.y < toRotateOriPos.y + .5f) { return; }
+        var deltaTouch0 = _mouseRef - toRotateOriPos; // Last touch pos from rotating obj
+        var deltaToucht = curr - toRotateOriPos; // current touch pos from rotating obj
+
+        // Calculate the angle's diference
+        angleOff = (Mathf.Atan2(deltaTouch0.y, deltaTouch0.x) -
+            Mathf.Atan2(deltaToucht.y, deltaToucht.x)) * Mathf.Rad2Deg;
+        angleOff = Mathf.Abs(angleOff); // Makes it always positive
+
+        switch (curr.x - _mouseRef.x >= 0)
+        {
+            // touch from left to right
+            case true:
+                objectToRotate.transform.Rotate(new Vector3(0, 0, -angleOff));
+                break;
+            // touch from rigt to left
+            case false:
+                objectToRotate.transform.Rotate(new Vector3(0, 0, angleOff));
+                break;
+        }
+        _mouseRef = curr;
+#endif
+
+    }
+    private void Update()
+    {
+#if UNITY_ANDROID && !UNITY_EDITOR
         // If there are touch(es)
         if (Input.touchCount > 0)
         {
@@ -87,6 +125,7 @@ public class DragRotate : MonoBehaviour
             }
 
         }
+#endif
     }
 
     private bool IsPositive(float num)
