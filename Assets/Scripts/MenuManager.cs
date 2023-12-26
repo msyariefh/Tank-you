@@ -1,11 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
-using Random = UnityEngine.Random;
 
 public class MenuManager : MonoBehaviour
 {
@@ -16,10 +13,10 @@ public class MenuManager : MonoBehaviour
     public TMP_Text score;
     public TMP_Text HScore;
     public GameObject newBadge;
-    private InterstitialAds interstitialAds;
+    private AdsManager interstitialAds;
     private AudioManager audioManager;
 
-    private InterstitialAds AdsManager => interstitialAds ??= FindFirstObjectByType<InterstitialAds>();
+    //private AdsManager AdsManager => interstitialAds ??= FindFirstObjectByType<AdsManager>();
     private AudioManager Audio=> audioManager ??= FindFirstObjectByType<AudioManager>();
 
     public enum State
@@ -54,7 +51,7 @@ public class MenuManager : MonoBehaviour
     }
     public void ResumeGame()
     {
-        Audio.RemoveEffectOnSound("Arena");
+        Audio.RemoveEffectOnSound();
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
         isPause = false;
@@ -67,11 +64,11 @@ public class MenuManager : MonoBehaviour
         pausePanel.SetActive(true);
         isPause = true;
         state = State.Menu;
-        Audio.AddEffectOnSound("Arena");
+        Audio.AddEffectOnSound();
     }
     public void StartGame()
     {
-        Audio.RemoveEffectOnSound("Arena");
+        Audio.RemoveEffectOnSound();
         SceneManager.LoadScene(1);
         Time.timeScale = 1f;
         state = State.Gameplay;
@@ -79,14 +76,14 @@ public class MenuManager : MonoBehaviour
     public void MenuGame()
     {
         //FindObjectOfType<InterstitialAds>().LoadAd();
-        if (IsTimeToLoadAds()) AdsManager.LoadAd();
-        Audio.RemoveEffectOnSound("Arena");
-        StartCoroutine(ExecuteAdsThenMenu(() =>
+        if (IsTimeToLoadAds()) AdsManager.Instance.LoadAd();
+        Audio.RemoveEffectOnSound();
+        StartCoroutine(ExecuteAfterAds(() =>
         {
             SceneManager.LoadScene(0);
             state = State.Menu;
             Time.timeScale = 1f;
-            Audio.PlaySound("Arena", "MainMenu");
+            Audio.PlayBgmSound("MainMenu");
         }));
         //FindObjectOfType<AudioManager>().RemoveEffectOnSound("Arena");
         //SceneManager.LoadScene(0);
@@ -96,18 +93,22 @@ public class MenuManager : MonoBehaviour
     }
     public void RetryGame()
     {
-        if (IsTimeToLoadAds()) AdsManager.LoadAd();
-        Audio.PlaySound("Arena", "Arena");
-        Audio.RemoveEffectOnSound("Arena");
-        SceneManager.LoadScene(1);
-        Time.timeScale = 1f;
-        state = State.Gameplay;
-        gameOverPanel.SetActive(false);
+        if (IsTimeToLoadAds()) AdsManager.Instance.LoadAd();
+        StartCoroutine(ExecuteAfterAds(() =>
+        {
+            Audio.PlayBgmSound("Arena");
+            Audio.RemoveEffectOnSound();
+            SceneManager.LoadScene(1);
+            Time.timeScale = 1f;
+            state = State.Gameplay;
+            gameOverPanel.SetActive(false); ;
+        }));
+        
     }
     public void GameOver()
     {
-        if (IsTimeToLoadAds()) AdsManager.LoadAd();
-        Audio.AddEffectOnSound("Arena");
+        if (IsTimeToLoadAds()) AdsManager.Instance.LoadAd();
+        Audio.AddEffectOnSound();
         int currentScore = GameManager.Instance.score;
         if (!PlayerPrefs.HasKey("HighScore"))
         {
@@ -133,24 +134,35 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    IEnumerator ExecuteAdsThenMenu(Action afterAds)
+    IEnumerator ExecuteAfterAds(Action afterAds)
     {
-        yield return AdsManager.WaitingForAds();
+        yield return AdsManager.Instance.WaitingForAds();
         afterAds?.Invoke();
     }
     
     float lastTimeLoadAds = 0f;
+    private int gameplaycount = 0;
     private bool IsTimeToLoadAds()
     {
-        var currentTime = Time.time;
-        if (lastTimeLoadAds == 0) lastTimeLoadAds = currentTime;
-        if (currentTime - lastTimeLoadAds > 30)
+        var cTime = Time.unscaledTime;
+        var deltaTime = cTime - lastTimeLoadAds;
+        Debug.Log($"[HiDE] {cTime} | {deltaTime} | {lastTimeLoadAds} | {gameplaycount} ");
+        gameplaycount++;
+        // Load ads if played more than 3mins
+        if (deltaTime > 240)
         {
-            lastTimeLoadAds = currentTime;
-            var ran = Random.Range(1, 100);
-            if (ran % 3 == 0) return true;
-            return false;
+            gameplaycount = 0;
+            lastTimeLoadAds = cTime;
+            return true;
         }
+        // 2 tries within 60 sec
+        if (gameplaycount >=2 && deltaTime > 30)
+        {
+            gameplaycount = 0;
+            lastTimeLoadAds = cTime;
+            return true;
+        }
+
         return false;
     }
 }

@@ -72,8 +72,8 @@ public class DragRotate : MonoBehaviour
         // If there are touch(es)
         if (Input.touchCount > 0)
         {
-            Touch touch = Input.GetTouch(0); // Get the first touch object
-            Vector3 touchPos = cam.ScreenToWorldPoint(touch.position); // convert touch pos to world point
+            var touch = Input.GetTouch(0); // Get the first touch object
+            var touchPos = (Vector2)cam.ScreenToWorldPoint(touch.position); // convert touch pos to world point
 
             // User start to touch
             if ( touch.phase == TouchPhase.Began)
@@ -89,8 +89,8 @@ public class DragRotate : MonoBehaviour
                 if (!isTouching) { return; }
                 if ( touchPos.y < toRotateOriPos.y + .5f) { return; }
 
-                Vector3 deltaTouch0 = touch0Pos - toRotateOriPos; // Last touch pos from rotating obj
-                Vector3 deltaToucht = touchPos - toRotateOriPos; // current touch pos from rotating obj
+                var deltaTouch0 = touch0Pos - toRotateOriPos; // Last touch pos from rotating obj
+                var deltaToucht = touchPos - toRotateOriPos; // current touch pos from rotating obj
 
                 // Calculate the angle's diference
                 angleOff = (Mathf.Atan2(deltaTouch0.y, deltaTouch0.x) -

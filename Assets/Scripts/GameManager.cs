@@ -90,8 +90,9 @@ public class GameManager : MonoBehaviour
     AudioManager ManagerAudio;
     public void PlaySoundFX(string name)
     {
-        ManagerAudio ??= FindFirstObjectByType<AudioManager>();
-        ManagerAudio.PlaySound(name);
+        //ManagerAudio ??= FindFirstObjectByType<AudioManager>();
+        //ManagerAudio.PlayBgmSound(name);
+        AudioManager.Instance.PlaySFX(name);
     }
     
 }
