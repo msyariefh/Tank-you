@@ -26,10 +26,10 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
     }
 
     // Load content to the Ad Unit:
-    public void LoadAd()
+    public void LoadAd(bool isFromGameplay = false)
     {
         // IMPORTANT! Only load content AFTER initialization (in this example, initialization is handled in a different script).
-        Debug.Log("Loading Ad: " + _adUnitId);
+        if (!IsTimeToLoadAds(isFromGameplay)) return;
         adShowing = true;
         Advertisement.Load(_adUnitId, this);
         ShowAd();
@@ -40,7 +40,6 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
     {
         // Note that if the ad content wasn't previously loaded, this method will fail
         
-        Debug.Log("Showing Ad: " + _adUnitId);
         Advertisement.Show(_adUnitId, this);
         
     }
@@ -65,11 +64,11 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
         {
             case UnityAdsShowCompletionState.SKIPPED:
                 adShowing = false;
-                Time.timeScale = 1;
+                //Time.timeScale = 1;
                 break;
             case UnityAdsShowCompletionState.COMPLETED:
                 adShowing = false;
-                Time.timeScale = 1;
+                //Time.timeScale = 1;
                 break;
 
         }
@@ -78,13 +77,13 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
     public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
     {
         adShowing = false;
-        Time.timeScale = 1;
+        //Time.timeScale = 1;
     }
 
     public void OnUnityAdsShowClick(string placementId)
     {
         adShowing = false;
-        Time.timeScale = 1;
+        //Time.timeScale = 1;
     }
 
     public void OnUnityAdsAdLoaded(string placementId)
@@ -94,6 +93,31 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
 
     public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
     {
-        
+        adShowing = false;
+    }
+    float lastTimeLoadAds = 0f;
+    private int gameplaycount = 0;
+    private bool IsTimeToLoadAds(bool isFromGameplay = false)
+    {
+        var cTime = Time.unscaledTime;
+        var deltaTime = cTime - lastTimeLoadAds;
+        Debug.Log($"[HiDE] {cTime} | {deltaTime} | {lastTimeLoadAds} | {gameplaycount} ");
+        if (isFromGameplay) gameplaycount++;
+        // Load ads if played more than 4mins
+        if (deltaTime > 240)
+        {
+            gameplaycount = 0;
+            lastTimeLoadAds = cTime;
+            return true;
+        }
+        // 2 tries and not within 60 sec
+        if (gameplaycount > 2 && deltaTime > 45)
+        {
+            gameplaycount = 0;
+            lastTimeLoadAds = cTime;
+            return true;
+        }
+
+        return false;
     }
 }

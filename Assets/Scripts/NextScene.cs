@@ -5,8 +5,9 @@ public class NextScene : MonoBehaviour
 {
     public void LoadNextScene()
     {
-        SceneManager.LoadScene(1);
-        AudioManager.Instance.PlayBgmSound("Arena");
+        MenuManager.Instance.StartGame();
+        //SceneManager.LoadScene(1);
+        //AudioManager.Instance.PlayBgmSound("Arena");
         //FindObjectOfType<AudioManager>().PlaySound("MainMenu", "Arena");
     }
 

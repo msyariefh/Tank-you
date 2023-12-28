@@ -72,6 +72,7 @@ public class DragRotate : MonoBehaviour
         // If there are touch(es)
         if (Input.touchCount > 0)
         {
+            if (MenuManager.Instance.state != MenuManager.State.Gameplay) return;
             var touch = Input.GetTouch(0); // Get the first touch object
             var touchPos = (Vector2)cam.ScreenToWorldPoint(touch.position); // convert touch pos to world point
 
