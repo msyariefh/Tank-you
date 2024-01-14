@@ -70,6 +70,7 @@ public class MenuManager : MonoBehaviour
         AdsManager.Instance.LoadAd(true);
         StartCoroutine(ExecuteAfterAds(() =>
         {
+            AudioManager.Instance.PlayBgmSound("Arena");
             AudioManager.Instance.RemoveEffectOnSound();
             SceneManager.LoadScene(1);
             Time.timeScale = 1f;
