@@ -46,7 +46,7 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
 
     // Implement Load Listener and Show Listener interface methods: 
 
-    public IEnumerable WaitingForAds()
+    public IEnumerator WaitingForAds()
     {
         yield return new WaitUntil(() => !adShowing);
     }
@@ -64,11 +64,11 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
         {
             case UnityAdsShowCompletionState.SKIPPED:
                 adShowing = false;
-                //Time.timeScale = 1;
+                Time.timeScale = 1;
                 break;
             case UnityAdsShowCompletionState.COMPLETED:
                 adShowing = false;
-                //Time.timeScale = 1;
+                Time.timeScale = 1;
                 break;
 
         }
@@ -111,7 +111,7 @@ public class AdsManager : MonoBehaviour, IUnityAdsShowListener, IUnityAdsLoadLis
             return true;
         }
         // 2 tries and not within 60 sec
-        if (gameplaycount > 2 && deltaTime > 45)
+        if (gameplaycount >= 2 && deltaTime > 45)
         {
             gameplaycount = 0;
             lastTimeLoadAds = cTime;
